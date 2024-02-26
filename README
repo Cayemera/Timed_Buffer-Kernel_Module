@@ -1,0 +1,92 @@
+
+Compilation Instructions:
+-----------------------
+
+Just run "make" to create the timebuffer.ko and the producer/consumer programs.
+
+Running Instructions:
+-----------------------
+
+1. Make sure that the device is unloaded or the device with same name doesn't
+   exist. Type "sudo ./buffer_unload".
+
+2. Load the timedbuffer module  using command "sudo ./buffer_load". This will create
+   a device called /dev/timedbuffer.
+
+3. The commands to run testcases are present in a file called testcase.sh. 
+   This script takes the test case number as the parameter. 
+   To execute a testcase type "./testcase.sh <testcasenumber>".
+
+Output Logfile Names:
+----------------
+
+1. The producers each write the item they have produced into their respective
+   log files. 
+
+2. The name of the logfile of a producer has the following format: Prod_<second-arg>.log 
+   where the <second-arg> is the parameter passed to the producer which is the name of
+   item that a particular producer will produce. For example: 
+            producer 50 red
+  producer writes its output in logfile Prod_red.log.
+
+3. The consumers each write the item they have consumed into their respective log files.
+   The name of the logfile of a consumer has the following format: Cons_<second-arg>.log
+   where <second-arg> is the parameter passed to the consumer program which is
+   an id entifier for a consumer. This argument must be unique per consumer.
+
+Test Case Description:
+-----------------------
+
+1. 	Testcase #1: 
+	-------------
+	In  this testcase the producer deposits 50 items into /dev/timebuffer.
+        These 50 items are remove by the consumer.
+   
+   	Expected Output: 
+	----------------
+	The producer and consumer both must exit normally and the consumer must
+	get all the 50 items.
+   
+	Running instructions: 
+	----------------------
+	Type "./testcase.sh 1" to execute this test case. The producer output
+	can be seen in file Prod_case1_red.log and the consumer output can be
+	seen in the file Cons_case1.log.
+
+2. 	Testcase #2: 
+	-------------
+	This test case consists of a one producer and one consumer. The producer
+	will try to deposit 50 items into /dev/timedbuffer. 
+        The consumer will remove only 10 items and then  exit. 
+   
+	Expected Output: 
+	-----------------
+        The consumer will read 10 items and exit.
+	For the given buffer size  of 20  for the timedbuffer, the producer can deposit
+	up to 30 more  items into the timedbuffer and exit after a timeout of 20 seconds,  
+        once the consumer exits. 
+   
+	Running Instructions:
+	----------------------
+	Type "./testcase.sh 2" to execute this test case. The producer output
+	can be seen in file Prod_case2_red.log and the consumer output can be
+	seen in the file Cons_case2.log.
+
+3.	Testcase #3:
+	-------------
+	This test case consists of one producer and one consumer. 
+        The producer deposits only 50 items into /dev/timedbuffer before exiting.
+        The consumer wants to remove 100 items, but it will be able to get 
+        only 50 items.
+
+	Expected Output:
+	-----------------
+	The producer will write 50 items into /dev/timedbuffer.
+	The consumer will remove 50 items and then after 20 seconds timeout
+        period it will exit since there are no producers.
+
+	Running Instructions:
+	----------------------
+	Type "./testcase.sh 3" to execute this test case. The producer output
+	can be seen in file Prod_case3_red.log and the consumer output can be
+	seen in the file Cons_case3.log.
